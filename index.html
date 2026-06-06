@@ -1,77 +1,912 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>데스크탑 자동 체크리스트</title>
-    <style>
-        * {margin:0; padding:0; box-sizing:border-box;}
-        body {font-family:sans-serif; background:#f0f2f5; padding:20px;}
-        #app {max-width:900px; margin:20px auto; padding:20px 1%; background:linear-gradient(135deg, #6c63ff, #8cae4e); color:#fff; border-radius:12px; margin-bottom:20px; box-shadow:0 8px 8px rgba(0,0,0,0.15); padding:24px;}
-        .btn-text{background:linear-gradient(135deg, #f092fb, #f557a0); color:#fff;}
-        .form-group {margin:12px 0;}
-        .form-group label {display:block; margin-bottom:6px; font-weight:600;}
-        .form-group input, .form-group textarea {width:100%; padding:10px; border:1.5px solid #ddd; border-radius:6px; background:#fefefe; font-family:monospace; white-space:pre-wrap;}
-        .form-group textarea {resize:vertical; min-height:80px;}
-        .btn-text {width:100%; padding:10px; border:0; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px; margin-top:4px; box-shadow:0 2px 4px rgba(0,0,0,0.1);}
-        .btn-text:hover {opacity:0.9;}
-        h1 {margin-bottom:10px; text-align:center;}
-        h2 {margin-top:20px; margin-bottom:10px; padding:12px; background:rgba(0,0,0,0.2); border-radius:8px; cursor:pointer; font-weight:600; border:none; color:#fff;}
-        #result{margin-top:20px; padding:16px; border-radius:8px; background:#fefefe; color:#1e1e1e; font-family:monospace; white-space:pre-wrap;}
-        .card {background:linear-gradient(135deg, #6c63ff, #8cae4e); padding:24px; border-radius:12px; margin:12px 24px; border:none; box-shadow:0 2px 8px rgba(0,0,0,0.15); padding:12px 24px; cursor:pointer; font-weight:600; border-radius:8px;}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>상품 쇼츠 제작 마법사 v3</title>
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f2f5;
+  color: #222;
+  line-height: 1.6;
+}
+
+#app {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.wizard-header {
+  background: linear-gradient(135deg, #6c63ff, #48cae4);
+  color: #fff;
+  border-radius: 16px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px rgba(108, 99, 255, 0.2);
+}
+
+.wizard-header h1 {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+
+.wizard-header p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.test-badge {
+  display: inline-block;
+  background: #f5576c;
+  color: #fff;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  margin-left: 12px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.steps-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.step-dot {
+  flex: 1;
+  min-width: 70px;
+  padding: 10px 6px;
+  background: #fff;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #888;
+  border: 2px solid #e0e0e0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.step-dot.active {
+  background: #6c63ff;
+  color: #fff;
+  border-color: #6c63ff;
+  font-weight: 700;
+  transform: scale(1.05);
+}
+
+.step-dot.done {
+  background: #e8f5e9;
+  color: #388e3c;
+  border-color: #a5d6a7;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 {
+  font-size: 1.15rem;
+  margin-bottom: 18px;
+  color: #333;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 8px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #6c63ff;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.upload-zone {
+  border: 2.5px dashed #c5b8ff;
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #faf9ff;
+}
+
+.upload-zone:hover {
+  background: #f0eeff;
+  border-color: #6c63ff;
+}
+
+.upload-zone img {
+  max-width: 200px;
+  max-height: 200px;
+  margin-top: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.scene-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.scene-card {
+  background: #f8f7ff;
+  border: 1.5px solid #e0dcff;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.scene-card h4 {
+  font-size: 0.85rem;
+  color: #6c63ff;
+  margin-bottom: 8px;
+}
+
+.scene-card textarea {
+  width: 100%;
+  border: 1px solid #d0ccff;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 0.8rem;
+  min-height: 100px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.copy-btn {
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+
+.copy-btn:hover {
+  background: #5551d9;
+}
+
+.srt-box {
+  background: #1e1e2e;
+  color: #a6e3a1;
+  padding: 18px;
+  border-radius: 10px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.platform-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.ptab {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.ptab.active.tiktok {
+  background: #010101;
+  color: #fff;
+  border-color: #010101;
+}
+
+.ptab.active.youtube {
+  background: #ff0000;
+  color: #fff;
+  border-color: #ff0000;
+}
+
+.ptab.active.naver {
+  background: #03c75a;
+  color: #fff;
+  border-color: #03c75a;
+}
+
+.platform-content {
+  display: none;
+}
+
+.platform-content.show {
+  display: block;
+}
+
+.clip-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.clip-item {
+  background: #f8f7ff;
+  border: 1.5px solid #e0dcff;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 0.82rem;
+}
+
+.clip-item strong {
+  color: #6c63ff;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.btn-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 11px 22px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #6c63ff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #5551d9;
+}
+
+.btn-secondary {
+  background: #ff9800;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background: #e65100;
+}
+
+.btn-ghost {
+  background: #fff;
+  color: #6c63ff;
+  border: 2px solid #6c63ff;
+}
+
+.btn-ghost:hover {
+  background: #f0eeff;
+}
+
+.btn-test {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  color: #fff;
+  border: none;
+}
+
+.btn-test:hover {
+  opacity: 0.9;
+}
+
+.btn-success {
+  background: #43a047;
+  color: #fff;
+}
+
+.btn-danger {
+  background: #e53935;
+  color: #fff;
+}
+
+.step-hint {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+@media (max-width: 600px) {
+  .scene-grid {
+    grid-template-columns: 1fr;
+  }
+  .clip-list {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
 </head>
 <body>
-<div id="app">
-    <button class="btn-text" onclick="runTest()">🎯 테스트 데이터 자동 채우기</button>
-    
-    <h2>✔ 미니멈 업로드: ✓</h2>
-    <div>
-        <div class="form-group">
-            <label>1. 미니멈 업로드:</label>
-            <input type="text" placeholder="✓">
-        </div>
-        <div class="form-group">
-            <label>2. 기본 정보 입력:</label>
-            <input type="text" placeholder="✓">
-        </div>
-        <div class="form-group">
-            <label>3. 상세한 프로젝트 설명:</label>
-            <input type="text" placeholder="✓">
-        </div>
-        <div class="form-group">
-            <label>4. 대표 이미지:</label>
-            <input type="text" placeholder="✓">
-        </div>
-        <div class="form-group">
-            <label>5. 지역 변환:</label>
-            <input type="text" placeholder="✓">
-        </div>
-        <div class="form-group">
-            <label>6. SRT 생성:</label>
-            <input type="text" placeholder="✓">
-        </div>
-        <div class="form-group">
-            <label>7. MP4 압축수준:</label>
-            <input type="text" placeholder="✓">
-        </div>
-        <div class="form-group">
-            <label>8. 동작은 덱스 세팅:</label>
-            <input type="text" placeholder="✓">
-        </div>
-    </div>
-    
-    <h2>모든 단계가 정상 작동합니다!</h2>
-    <div id="result"></div>
-</div>
+<div id="app"></div>
 
 <script>
-const app = document.getElementById('app');
+let currentStep = 0;
+let uploadedImage = null;
+let clipFiles = [];
+let activeTab = 'tiktok';
 
-function runTest() {
-    document.getElementById('result').innerHTML = '테스트가 완료되었습니다. 기본 값이 채워졌습니다!';
-    alert('테스트 데이터가 자동으로 채워졌습니다!');
+const steps = [
+  '이미지 업로드',
+  '기본 정보',
+  '장면 프롬프트',
+  '대본 입력',
+  '자막 분할',
+  'SRT 생성',
+  'MP4 업로드',
+  '플랫폼 텍스트'
+];
+
+function init() {
+  renderApp();
 }
+
+function renderApp() {
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="wizard-header">
+      <h1>🎬 상품 쇼츠 제작 마법사 v3 ${currentStep === 7 ? '<span class="test-badge">테스트 완료</span>' : ''}</h1>
+      <p>상품 이미지부터 플랫폼별 쇼츠 텍스트까지 한 번에 생성</p>
+    </div>
+    
+    <div class="steps-bar">
+      ${steps.map((s, i) => `
+        <div class="step-dot ${i === currentStep ? 'active' : ''} ${i < currentStep ? 'done' : ''}" data-step="${i}">
+          ${s}
+        </div>
+      `).join('')}
+    </div>
+    
+    <div id="stepContent"></div>
+    
+    <div class="actions">
+      <div class="btn-group">
+        ${currentStep > 0 ? '<button class="btn btn-ghost" id="prevBtn">← 이전</button>' : ''}
+        ${currentStep < 7 ? '<button class="btn btn-primary" id="nextBtn">다음 →</button>' : ''}
+        <button class="btn btn-test" id="testBtn">🧪 테스트 데이터 자동 채우기</button>
+      </div>
+      <div class="step-hint">${currentStep + 1} / ${steps.length}</div>
+    </div>
+  `;
+  
+  renderStepContent();
+  attachEvents();
+}
+
+function renderStepContent() {
+  const content = document.getElementById('stepContent');
+  
+  switch(currentStep) {
+    case 0:
+      content.innerHTML = `
+        <div class="card">
+          <h2>📷 상품 이미지 업로드</h2>
+          <div class="upload-zone" id="uploadZone">
+            <p>클릭하여 상품 이미지를 업로드하세요</p>
+            ${uploadedImage ? `<img src="${uploadedImage}" alt="상품">` : ''}
+          </div>
+          <input type="file" id="imageInput" accept="image/*" style="display:none;">
+        </div>
+      `;
+      break;
+    case 1:
+      content.innerHTML = `
+        <div class="card">
+          <h2>⚙️ 기본 정보 입력</h2>
+          <div class="form-group">
+            <label>상품 유형</label>
+            <select id="productType">
+              <option>주방용품</option>
+              <option>뷰티/화장품</option>
+              <option>가전제품</option>
+              <option>의류/패션</option>
+              <option>식품</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>영상 비율</label>
+            <select id="aspectRatio">
+              <option>9:16 쇼츠</option>
+              <option>16:9 가로형</option>
+              <option>1:1 정사각형</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>영상 톤</label>
+            <select id="videoTone">
+              <option>광고형</option>
+              <option>리뷰형</option>
+              <option>감성형</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>CTA 문구</label>
+            <input type="text" id="ctaText" placeholder="예: 지금 바로 확인해보세요">
+          </div>
+        </div>
+      `;
+      break;
+    case 2:
+      content.innerHTML = `
+        <div class="card">
+          <h2>🎞️ 4개 장면 프롬프트 (각 5초)</h2>
+          <div class="scene-grid">
+            ${[1, 2, 3, 4].map(i => `
+              <div class="scene-card">
+                <h4>장면 ${i} (${(i-1)*5}초~${i*5}초)</h4>
+                <textarea id="scene${i}" placeholder="장면 ${i} 프롬프트..."></textarea>
+                <button class="copy-btn" data-copy="scene${i}">📋 복사</button>
+              </div>
+            `).join('')}
+          </div>
+          <button class="btn btn-success" id="generateScenes" style="margin-top:16px;">✨ 자동 생성</button>
+        </div>
+      `;
+      break;
+    case 3:
+      content.innerHTML = `
+        <div class="card">
+          <h2>📝 전체 광고 대본 입력</h2>
+          <div class="form-group">
+            <label>20초 광고 대본</label>
+            <textarea id="scriptInput" placeholder="전체 광고 대본을 입력하세요..." style="min-height:150px;"></textarea>
+          </div>
+        </div>
+      `;
+      break;
+    case 4:
+      content.innerHTML = `
+        <div class="card">
+          <h2>📑 장면별 자막 분할</h2>
+          <div id="subtitleSplit"></div>
+          <button class="btn btn-success" id="splitScript" style="margin-top:16px;">✂️ 자동 분할</button>
+        </div>
+      `;
+      break;
+    case 5:
+      content.innerHTML = `
+        <div class="card">
+          <h2>📄 SRT 자막 파일 생성</h2>
+          <div class="srt-box" id="srtOutput"></div>
+          <button class="btn btn-success" id="generateSRT" style="margin-top:16px;">🎬 SRT 생성</button>
+          <button class="copy-btn" style="margin-left:8px;margin-top:16px;" id="copySRT">📋 전체 복사</button>
+        </div>
+      `;
+      break;
+    case 6:
+      content.innerHTML = `
+        <div class="card">
+          <h2>🎥 5초 MP4 클립 4개 업로드</h2>
+          <input type="file" id="clipInput" accept="video/mp4" multiple style="margin-bottom:12px;">
+          <div class="clip-list" id="clipList"></div>
+        </div>
+      `;
+      break;
+    case 7:
+      content.innerHTML = `
+        <div class="card">
+          <h2>🌐 플랫폼별 업로드 텍스트 생성</h2>
+          <div class="platform-tabs">
+            <div class="ptab tiktok ${activeTab === 'tiktok' ? 'active' : ''}" data-tab="tiktok">TikTok</div>
+            <div class="ptab youtube ${activeTab === 'youtube' ? 'active' : ''}" data-tab="youtube">YouTube Shorts</div>
+            <div class="ptab naver ${activeTab === 'naver' ? 'active' : ''}" data-tab="naver">Naver 클립</div>
+          </div>
+          
+          <div class="platform-content ${activeTab === 'tiktok' ? 'show' : ''}" id="tiktok-content">
+            <h3 style="margin-bottom:12px;">TikTok 캡션</h3>
+            <div class="form-group">
+              <label>훅 문장</label>
+              <input type="text" id="tiktok-hook" placeholder="짧은 훅 문장...">
+            </div>
+            <div class="form-group">
+              <label>캡션</label>
+              <textarea id="tiktok-caption" placeholder="1~2줄 캡션..." style="min-height:80px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label>해시태그</label>
+              <input type="text" id="tiktok-tags" placeholder="#태그1 #태그2">
+            </div>
+            <button class="copy-btn" id="copy-tiktok">📋 전체 복사</button>
+          </div>
+          
+          <div class="platform-content ${activeTab === 'youtube' ? 'show' : ''}" id="youtube-content">
+            <h3 style="margin-bottom:12px;">YouTube Shorts</h3>
+            <div class="form-group">
+              <label>제목</label>
+              <input type="text" id="youtube-title" placeholder="키워드 중심 제목...">
+            </div>
+            <div class="form-group">
+              <label>설명</label>
+              <textarea id="youtube-desc" placeholder="상세 설명..." style="min-height:120px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label>해시태그</label>
+              <input type="text" id="youtube-tags" placeholder="#Shorts #태그2">
+            </div>
+            <button class="copy-btn" id="copy-youtube">📋 전체 복사</button>
+          </div>
+          
+          <div class="platform-content ${activeTab === 'naver' ? 'show' : ''}" id="naver-content">
+            <h3 style="margin-bottom:12px;">Naver 클립</h3>
+            <div class="form-group">
+              <label>제목</label>
+              <input type="text" id="naver-title" placeholder="검색어 중심 제목...">
+            </div>
+            <div class="form-group">
+              <label>설명</label>
+              <textarea id="naver-desc" placeholder="상품 설명..." style="min-height:100px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label>연결 링크</label>
+              <textarea id="naver-links" placeholder="블로그 URL, 쇼핑 URL..." style="min-height:60px;"></textarea>
+            </div>
+            <button class="copy-btn" id="copy-naver">📋 전체 복사</button>
+          </div>
+          
+          <button class="btn btn-success" id="generatePlatforms" style="margin-top:16px;">✨ 플랫폼 텍스트 자동 생성</button>
+        </div>
+      `;
+      break;
+  }
+}
+
+function attachEvents() {
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const testBtn = document.getElementById('testBtn');
+  
+  if (prevBtn) prevBtn.addEventListener('click', () => {
+    currentStep = Math.max(0, currentStep - 1);
+    renderApp();
+  });
+  
+  if (nextBtn) nextBtn.addEventListener('click', () => {
+    currentStep = Math.min(7, currentStep + 1);
+    renderApp();
+  });
+  
+  if (testBtn) testBtn.addEventListener('click', fillTestData);
+  
+  attachStepEvents();
+}
+
+function attachStepEvents() {
+  const uploadZone = document.getElementById('uploadZone');
+  const imageInput = document.getElementById('imageInput');
+  if (uploadZone) {
+    uploadZone.addEventListener('click', () => imageInput.click());
+    imageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          uploadedImage = ev.target.result;
+          renderApp();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+  
+  const generateScenes = document.getElementById('generateScenes');
+  if (generateScenes) {
+    generateScenes.addEventListener('click', buildScenes);
+  }
+  
+  document.querySelectorAll('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const id = e.target.dataset.copy;
+      const text = document.getElementById(id).value;
+      navigator.clipboard.writeText(text);
+      alert('복사되었습니다!');
+    });
+  });
+  
+  const splitScript = document.getElementById('splitScript');
+  if (splitScript) {
+    splitScript.addEventListener('click', splitScriptIntoScenes);
+  }
+  
+  const generateSRT = document.getElementById('generateSRT');
+  const copySRT = document.getElementById('copySRT');
+  if (generateSRT) {
+    generateSRT.addEventListener('click', buildSrt);
+  }
+  if (copySRT) {
+    copySRT.addEventListener('click', () => {
+      const text = document.getElementById('srtOutput').textContent;
+      navigator.clipboard.writeText(text);
+      alert('SRT 전체가 복사되었습니다!');
+    });
+  }
+  
+  const clipInput = document.getElementById('clipInput');
+  if (clipInput) {
+    clipInput.addEventListener('change', (e) => {
+      clipFiles = Array.from(e.target.files);
+      updateClipList();
+    });
+  }
+  
+  document.querySelectorAll('.ptab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      activeTab = e.target.dataset.tab;
+      renderApp();
+    });
+  });
+  
+  const generatePlatforms = document.getElementById('generatePlatforms');
+  if (generatePlatforms) {
+    generatePlatforms.addEventListener('click', buildPlatformTexts);
+  }
+  
+  const copyTiktok = document.getElementById('copy-tiktok');
+  const copyYoutube = document.getElementById('copy-youtube');
+  const copyNaver = document.getElementById('copy-naver');
+  if (copyTiktok) {
+    copyTiktok.addEventListener('click', () => {
+      const text = `${document.getElementById('tiktok-hook').value}\\n\\n${document.getElementById('tiktok-caption').value}\\n\\n${document.getElementById('tiktok-tags').value}`;
+      navigator.clipboard.writeText(text);
+      alert('TikTok 텍스트가 복사되었습니다!');
+    });
+  }
+  if (copyYoutube) {
+    copyYoutube.addEventListener('click', () => {
+      const text = `제목: ${document.getElementById('youtube-title').value}\\n\\n설명:\\n${document.getElementById('youtube-desc').value}\\n\\n${document.getElementById('youtube-tags').value}`;
+      navigator.clipboard.writeText(text);
+      alert('YouTube Shorts 텍스트가 복사되었습니다!');
+    });
+  }
+  if (copyNaver) {
+    copyNaver.addEventListener('click', () => {
+      const text = `제목: ${document.getElementById('naver-title').value}\\n\\n설명:\\n${document.getElementById('naver-desc').value}\\n\\n연결 링크:\\n${document.getElementById('naver-links').value}`;
+      navigator.clipboard.writeText(text);
+      alert('Naver 클립 텍스트가 복사되었습니다!');
+    });
+  }
+}
+
+function buildScenes() {
+  const productType = document.getElementById('productType').value;
+  const ratio = document.getElementById('aspectRatio').value;
+  const tone = document.getElementById('videoTone').value;
+  const cta = document.getElementById('ctaText').value || '지금 확인하세요';
+  
+  document.getElementById('scene1').value = `${productType}이 깔끔한 스튜디오 위에 놓여 있습니다. 카메라가 천천히 정면에서 줌인하며, 부드러운 조명이 제품 표면을 비춥니다. ${ratio} 비율, ${tone} 느낌.`;
+  
+  document.getElementById('scene2').value = `제품이 천천히 180도 회전합니다. 주요 디테일과 특징이 자연스럽게 드러나며, 카메라는 약간 측면으로 이동합니다. ${tone} 스타일 유지.`;
+  
+  document.getElementById('scene3').value = `제품의 핵심 기능이나 사용 장면을 강조합니다. 손이 제품을 가볍게 잡거나 사용하는 짧은 동작을 포함할 수 있습니다. ${ratio} 세로 프레임.`;
+  
+  document.getElementById('scene4').value = `마무리 장면. 제품이 화면 중앙에 안정적으로 배치되고, "${cta}" 같은 CTA 텍스트가 자연스럽게 오버레이됩니다. ${tone} 분위기 마무리.`;
+  
+  alert('4개 장면 프롬프트가 자동 생성되었습니다!');
+}
+
+function splitScriptIntoScenes() {
+  const script = document.getElementById('scriptInput').value;
+  if (!script) {
+    alert('먼저 대본을 입력해주세요!');
+    return;
+  }
+  
+  const sentences = script.match(/[^.!?]+[.!?]+/g) || [script];
+  const perScene = Math.ceil(sentences.length / 4);
+  
+  const scene1 = sentences.slice(0, perScene).join(' ');
+  const scene2 = sentences.slice(perScene, perScene * 2).join(' ');
+  const scene3 = sentences.slice(perScene * 2, perScene * 3).join(' ');
+  const scene4 = sentences.slice(perScene * 3).join(' ');
+  
+  document.getElementById('subtitleSplit').innerHTML = `
+    <div class="scene-card" style="margin-bottom:12px;">
+      <h4>장면 1 자막 (0~5초)</h4>
+      <p>${scene1}</p>
+    </div>
+    <div class="scene-card" style="margin-bottom:12px;">
+      <h4>장면 2 자막 (5~10초)</h4>
+      <p>${scene2}</p>
+    </div>
+    <div class="scene-card" style="margin-bottom:12px;">
+      <h4>장면 3 자막 (10~15초)</h4>
+      <p>${scene3}</p>
+    </div>
+    <div class="scene-card" style="margin-bottom:12px;">
+      <h4>장면 4 자막 (15~20초)</h4>
+      <p>${scene4}</p>
+    </div>
+  `;
+}
+
+function buildSrt() {
+  const script = document.getElementById('scriptInput').value;
+  if (!script) {
+    alert('먼저 대본을 입력해주세요!');
+    return;
+  }
+  
+  const sentences = script.match(/[^.!?]+[.!?]+/g) || [script];
+  const duration = 20 / sentences.length;
+  
+  let srt = '';
+  sentences.forEach((s, i) => {
+    const start = i * duration;
+    const end = (i + 1) * duration;
+    srt += `${i + 1}\\n`;
+    srt += `${formatTime(start)} --> ${formatTime(end)}\\n`;
+    srt += `${s.trim()}\\n\\n`;
+  });
+  
+  document.getElementById('srtOutput').textContent = srt;
+}
+
+function formatTime(sec) {
+  const h = Math.floor(sec / 3600).toString().padStart(2, '0');
+  const m = Math.floor((sec % 3600) / 60).toString().padStart(2, '0');
+  const s = Math.floor(sec % 60).toString().padStart(2, '0');
+  const ms = Math.floor((sec % 1) * 1000).toString().padStart(3, '0');
+  return `${h}:${m}:${s},${ms}`;
+}
+
+function updateClipList() {
+  const list = document.getElementById('clipList');
+  if (!list) return;
+  
+  list.innerHTML = clipFiles.map((f, i) => `
+    <div class="clip-item">
+      <strong>장면 ${i + 1}</strong>
+      <div style="font-size:0.75rem;color:#888;margin-top:4px;">${f.name}</div>
+      <div style="font-size:0.75rem;color:#888;">${(f.size / 1024 / 1024).toFixed(2)} MB</div>
+    </div>
+  `).join('');
+}
+
+function buildPlatformTexts() {
+  const productType = document.getElementById('productType').value;
+  const script = document.getElementById('scriptInput').value || '매일 사용하는 상품, 이제 더 편리하게 사용해보세요.';
+  const cta = document.getElementById('ctaText').value || '지금 확인하세요';
+  
+  document.getElementById('tiktok-hook').value = `${productType} 이거 하나면 끝난다`;
+  document.getElementById('tiktok-caption').value = script.split('.')[0] + '.';
+  document.getElementById('tiktok-tags').value = `#${productType}추천 #쇼핑 #생활꿀템`;
+  
+  document.getElementById('youtube-title').value = `${productType} 추천, ${script.split('.')[0]} 2026`;
+  document.getElementById('youtube-desc').value = `${script}\\n\\n${cta}`;
+  document.getElementById('youtube-tags').value = `#Shorts #${productType} #추천템`;
+  
+  document.getElementById('naver-title').value = `${productType} 추천 베스트`;
+  document.getElementById('naver-desc').value = `${script}\\n\\n자세한 후기는 블로그와 쇼핑 링크에서 확인하세요.`;
+  document.getElementById('naver-links').value = '블로그: (URL)\\n쇼핑: (URL)';
+  
+  alert('플랫폼별 텍스트가 자동 생성되었습니다!');
+}
+
+function fillTestData() {
+  if (!uploadedImage) {
+    uploadedImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2U2ZTZmYSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjNjY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+7YWM7Iqk7Yq4IOydtOuvuOyngDwvdGV4dD48L3N2Zz4=';
+  }
+  
+  currentStep = 1;
+  renderApp();
+  
+  setTimeout(() => {
+    document.getElementById('productType').value = '주방용품';
+    document.getElementById('aspectRatio').value = '9:16 쇼츠';
+    document.getElementById('videoTone').value = '광고형';
+    document.getElementById('ctaText').value = '지금 바로 확인해보세요';
+    
+    currentStep = 2;
+    renderApp();
+    
+    setTimeout(() => {
+      buildScenes();
+      
+      currentStep = 3;
+      renderApp();
+      
+      setTimeout(() => {
+        const sampleScript = '매일 쓰는 접시와 컵, 설거지 시간이 너무 길다고 느껴지지 않나요? 이 주방 설거지 용품은 물때와 기름때를 빠르게 제거해 줍니다. 손에 무리가 덜 가도록 인체공학적으로 설계되어 자취생과 직장인에게 딱 맞습니다. 지금 바로 확인해보고 내 주방에 맞는지 비교해 보세요.';
+        document.getElementById('scriptInput').value = sampleScript;
+        
+        currentStep = 4;
+        renderApp();
+        
+        setTimeout(() => {
+          splitScriptIntoScenes();
+          
+          currentStep = 5;
+          renderApp();
+          
+          setTimeout(() => {
+            buildSrt();
+            
+            currentStep = 6;
+            renderApp();
+            
+            clipFiles = [
+              { name: 'scene1_test.mp4', size: 5 * 1024 * 1024 },
+              { name: 'scene2_test.mp4', size: 5 * 1024 * 1024 },
+              { name: 'scene3_test.mp4', size: 5 * 1024 * 1024 },
+              { name: 'scene4_test.mp4', size: 5 * 1024 * 1024 }
+            ];
+            updateClipList();
+            
+            currentStep = 7;
+            renderApp();
+            
+            setTimeout(() => {
+              buildPlatformTexts();
+              alert('✅ 테스트 데이터가 모두 채워졌습니다! 각 단계를 확인해보세요.');
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 300);
+    }, 300);
+  }, 300);
+}
+
+init();
 </script>
 </body>
 </html>
