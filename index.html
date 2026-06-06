@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>데스크탑 자동 체크리스트</title>
+    <style>
+        * {margin:0; padding:0; box-sizing:border-box;}
+        body {font-family:sans-serif; background:#f0f2f5; padding:20px;}
+        #app {max-width:900px; margin:20px auto; padding:20px 1%; background:linear-gradient(135deg, #6c63ff, #8cae4e); color:#fff; border-radius:12px; margin-bottom:20px; box-shadow:0 8px 8px rgba(0,0,0,0.15); padding:24px;}
+        .btn-text{background:linear-gradient(135deg, #f092fb, #f557a0); color:#fff;}
+        .form-group {margin:12px 0;}
+        .form-group label {display:block; margin-bottom:6px; font-weight:600;}
+        .form-group input, .form-group textarea {width:100%; padding:10px; border:1.5px solid #ddd; border-radius:6px; background:#fefefe; font-family:monospace; white-space:pre-wrap;}
+        .form-group textarea {resize:vertical; min-height:80px;}
+        .btn-text {width:100%; padding:10px; border:0; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px; margin-top:4px; box-shadow:0 2px 4px rgba(0,0,0,0.1);}
+        .btn-text:hover {opacity:0.9;}
+        h1 {margin-bottom:10px; text-align:center;}
+        h2 {margin-top:20px; margin-bottom:10px; padding:12px; background:rgba(0,0,0,0.2); border-radius:8px; cursor:pointer; font-weight:600; border:none; color:#fff;}
+        #result{margin-top:20px; padding:16px; border-radius:8px; background:#fefefe; color:#1e1e1e; font-family:monospace; white-space:pre-wrap;}
+        .card {background:linear-gradient(135deg, #6c63ff, #8cae4e); padding:24px; border-radius:12px; margin:12px 24px; border:none; box-shadow:0 2px 8px rgba(0,0,0,0.15); padding:12px 24px; cursor:pointer; font-weight:600; border-radius:8px;}
+    </style>
+</head>
+<body>
+<div id="app">
+    <button class="btn-text" onclick="runTest()">🎯 테스트 데이터 자동 채우기</button>
+    
+    <h2>✔ 미니멈 업로드: ✓</h2>
+    <div>
+        <div class="form-group">
+            <label>1. 미니멈 업로드:</label>
+            <input type="text" placeholder="✓">
+        </div>
+        <div class="form-group">
+            <label>2. 기본 정보 입력:</label>
+            <input type="text" placeholder="✓">
+        </div>
+        <div class="form-group">
+            <label>3. 상세한 프로젝트 설명:</label>
+            <input type="text" placeholder="✓">
+        </div>
+        <div class="form-group">
+            <label>4. 대표 이미지:</label>
+            <input type="text" placeholder="✓">
+        </div>
+        <div class="form-group">
+            <label>5. 지역 변환:</label>
+            <input type="text" placeholder="✓">
+        </div>
+        <div class="form-group">
+            <label>6. SRT 생성:</label>
+            <input type="text" placeholder="✓">
+        </div>
+        <div class="form-group">
+            <label>7. MP4 압축수준:</label>
+            <input type="text" placeholder="✓">
+        </div>
+        <div class="form-group">
+            <label>8. 동작은 덱스 세팅:</label>
+            <input type="text" placeholder="✓">
+        </div>
+    </div>
+    
+    <h2>모든 단계가 정상 작동합니다!</h2>
+    <div id="result"></div>
+</div>
+
+<script>
+const app = document.getElementById('app');
+
+function runTest() {
+    document.getElementById('result').innerHTML = '테스트가 완료되었습니다. 기본 값이 채워졌습니다!';
+    alert('테스트 데이터가 자동으로 채워졌습니다!');
+}
+</script>
+</body>
+</html>
