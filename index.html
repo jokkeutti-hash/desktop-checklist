@@ -725,6 +725,14 @@ function attachStepEvents() {
       alert('Naver 클립 텍스트가 복사되었습니다!');
     });
   }
+
+    // Step dot navigation
+    document.querySelectorAll('.step-dot').forEach(dot => {
+          dot.addEventListener('click', (e) => {
+                  currentStep = parseInt(e.target.dataset.step);
+                  renderApp();
+                });
+        });
 }
 
 function buildScenes() {
