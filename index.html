@@ -5,401 +5,189 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>상품 쇼츠 제작 마법사 v3</title>
 <style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f0f2f5;
-  color: #222;
-  line-height: 1.6;
-}
-
-#app {
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.wizard-header {
-  background: linear-gradient(135deg, #6c63ff, #48cae4);
-  color: #fff;
-  border-radius: 16px;
-  padding: 28px 32px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 16px rgba(108, 99, 255, 0.2);
-}
-
-.wizard-header h1 {
-  font-size: 1.6rem;
-  margin-bottom: 8px;
-}
-
-.wizard-header p {
-  font-size: 0.9rem;
-  opacity: 0.9;
-}
-
-.test-badge {
-  display: inline-block;
-  background: #f5576c;
-  color: #fff;
-  border-radius: 6px;
-  padding: 4px 12px;
-  font-size: 0.75rem;
-  margin-left: 12px;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
-}
-
-.steps-bar {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-
-.step-dot {
-  flex: 1;
-  min-width: 70px;
-  padding: 10px 6px;
-  background: #fff;
-  border-radius: 10px;
-  text-align: center;
-  font-size: 0.75rem;
-  color: #888;
-  border: 2px solid #e0e0e0;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.step-dot.active {
-  background: #6c63ff;
-  color: #fff;
-  border-color: #6c63ff;
-  font-weight: 700;
-  transform: scale(1.05);
-}
-
-.step-dot.done {
-  background: #e8f5e9;
-  color: #388e3c;
-  border-color: #a5d6a7;
-}
-
-.card {
-  background: #fff;
-  border-radius: 16px;
-  padding: 28px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-}
-
-.card h2 {
-  font-size: 1.15rem;
-  margin-bottom: 18px;
-  color: #333;
-  border-bottom: 2px solid #f0f0f0;
-  padding-bottom: 8px;
-}
-
-.form-group {
-  margin-bottom: 16px;
-}
-
-.form-group label {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: #555;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1.5px solid #ddd;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  outline: none;
-  transition: border-color 0.2s;
-  font-family: inherit;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: #6c63ff;
-}
-
-.form-group textarea {
-  resize: vertical;
-  min-height: 90px;
-}
-
-.upload-zone {
-  border: 2.5px dashed #c5b8ff;
-  border-radius: 12px;
-  padding: 32px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  background: #faf9ff;
-}
-
-.upload-zone:hover {
-  background: #f0eeff;
-  border-color: #6c63ff;
-}
-
-.upload-zone img {
-  max-width: 200px;
-  max-height: 200px;
-  margin-top: 12px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.scene-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.scene-card {
-  background: #f8f7ff;
-  border: 1.5px solid #e0dcff;
-  border-radius: 12px;
-  padding: 16px;
-}
-
-.scene-card h4 {
-  font-size: 0.85rem;
-  color: #6c63ff;
-  margin-bottom: 8px;
-}
-
-.scene-card textarea {
-  width: 100%;
-  border: 1px solid #d0ccff;
-  border-radius: 6px;
-  padding: 8px;
-  font-size: 0.8rem;
-  min-height: 100px;
-  resize: vertical;
-  font-family: inherit;
-}
-
-.copy-btn {
-  background: #6c63ff;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 0.75rem;
-  cursor: pointer;
-  margin-top: 8px;
-  transition: background 0.2s;
-}
-
-.copy-btn:hover {
-  background: #5551d9;
-}
-
-.srt-box {
-  background: #1e1e2e;
-  color: #a6e3a1;
-  padding: 18px;
-  border-radius: 10px;
-  font-family: 'Consolas', 'Monaco', monospace;
-  font-size: 0.8rem;
-  white-space: pre-wrap;
-  max-height: 240px;
-  overflow-y: auto;
-}
-
-.platform-tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
-.ptab {
-  padding: 10px 18px;
-  border-radius: 8px;
-  border: 2px solid #e0e0e0;
-  background: #fff;
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-
-.ptab.active.tiktok {
-  background: #010101;
-  color: #fff;
-  border-color: #010101;
-}
-
-.ptab.active.youtube {
-  background: #ff0000;
-  color: #fff;
-  border-color: #ff0000;
-}
-
-.ptab.active.naver {
-  background: #03c75a;
-  color: #fff;
-  border-color: #03c75a;
-}
-
-.platform-content {
-  display: none;
-}
-
-.platform-content.show {
-  display: block;
-}
-
-.clip-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.clip-item {
-  background: #f8f7ff;
-  border: 1.5px solid #e0dcff;
-  border-radius: 8px;
-  padding: 12px;
-  font-size: 0.82rem;
-}
-
-.clip-item strong {
-  color: #6c63ff;
-}
-
-.actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.btn-group {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.btn {
-  padding: 11px 22px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-
-.btn-primary {
-  background: #6c63ff;
-  color: #fff;
-}
-
-.btn-primary:hover {
-  background: #5551d9;
-}
-
-.btn-secondary {
-  background: #ff9800;
-  color: #fff;
-}
-
-.btn-secondary:hover {
-  background: #e65100;
-}
-
-.btn-ghost {
-  background: #fff;
-  color: #6c63ff;
-  border: 2px solid #6c63ff;
-}
-
-.btn-ghost:hover {
-  background: #f0eeff;
-}
-
-.btn-test {
-  background: linear-gradient(135deg, #f093fb, #f5576c);
-  color: #fff;
-  border: none;
-}
-
-.btn-test:hover {
-  opacity: 0.9;
-}
-
-.btn-success {
-  background: #43a047;
-  color: #fff;
-}
-
-.btn-danger {
-  background: #e53935;
-  color: #fff;
-}
-
-.step-hint {
-  font-size: 0.8rem;
-  color: #888;
-}
-
-@media (max-width: 600px) {
-  .scene-grid {
-    grid-template-columns: 1fr;
-  }
-  .clip-list {
-    grid-template-columns: 1fr;
-  }
-}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; color: #222; line-height: 1.6; }
+  #app { max-width: 920px; margin: 0 auto; padding: 20px; }
+  .wizard-header { background: linear-gradient(135deg, #6c63ff, #48cae4); color: #fff; border-radius: 16px; padding: 28px 32px; margin-bottom: 24px; box-shadow: 0 4px 16px rgba(108, 99, 255, 0.2); }
+  .wizard-header h1 { font-size: 1.6rem; margin-bottom: 8px; }
+  .wizard-header p { font-size: 0.9rem; opacity: 0.9; }
+  .test-badge { display: inline-block; background: #f5576c; color: #fff; border-radius: 6px; padding: 4px 12px; font-size: 0.75rem; margin-left: 12px; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+  .steps-bar { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .step-dot { flex: 1; min-width: 70px; padding: 10px 6px; background: #fff; border-radius: 10px; text-align: center; font-size: 0.75rem; color: #888; border: 2px solid #e0e0e0; cursor: pointer; transition: all 0.2s; }
+  .step-dot.active { background: #6c63ff; color: #fff; border-color: #6c63ff; font-weight: 700; transform: scale(1.05); }
+  .step-dot.done { background: #e8f5e9; color: #388e3c; border-color: #a5d6a7; }
+  .card { background: #fff; border-radius: 16px; padding: 28px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); }
+  .card h2 { font-size: 1.15rem; margin-bottom: 18px; color: #333; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #555; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 14px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.9rem; outline: none; transition: border-color 0.2s; font-family: inherit; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #6c63ff; }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+  .upload-zone { border: 2.5px dashed #c5b8ff; border-radius: 12px; padding: 32px; text-align: center; cursor: pointer; transition: all 0.2s; background: #faf9ff; }
+  .upload-zone:hover { background: #f0eeff; border-color: #6c63ff; }
+  .upload-zone img { max-width: 200px; max-height: 200px; margin-top: 12px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+  .scene-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .scene-card { background: #f8f7ff; border: 1.5px solid #e0dcff; border-radius: 12px; padding: 16px; }
+  .scene-card h4 { font-size: 0.85rem; color: #6c63ff; margin-bottom: 8px; }
+  .scene-card textarea { width: 100%; border: 1px solid #d0ccff; border-radius: 6px; padding: 8px; font-size: 0.8rem; min-height: 100px; resize: vertical; font-family: inherit; }
+  .copy-btn { background: #6c63ff; color: #fff; border: none; border-radius: 6px; padding: 6px 12px; font-size: 0.75rem; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
+  .copy-btn:hover { background: #5551d9; }
+  .srt-box { background: #1e1e2e; color: #a6e3a1; padding: 18px; border-radius: 10px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.8rem; white-space: pre-wrap; max-height: 240px; overflow-y: auto; }
+  .platform-tabs { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .ptab { padding: 10px 18px; border-radius: 8px; border: 2px solid #e0e0e0; background: #fff; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
+  .ptab.active.tiktok { background: #010101; color: #fff; border-color: #010101; }
+  .ptab.active.youtube { background: #ff0000; color: #fff; border-color: #ff0000; }
+  .ptab.active.naver { background: #03c75a; color: #fff; border-color: #03c75a; }
+  .platform-content { display: none; }
+  .platform-content.show { display: block; }
+  .clip-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .clip-item { background: #f8f7ff; border: 1.5px solid #e0dcff; border-radius: 8px; padding: 12px; font-size: 0.82rem; }
+  .clip-item strong { color: #6c63ff; }
+  .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; flex-wrap: wrap; gap: 12px; }
+  .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { padding: 11px 22px; border-radius: 10px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; }
+  .btn-primary { background: #6c63ff; color: #fff; }
+  .btn-primary:hover { background: #5551d9; }
+  .btn-secondary { background: #ff9800; color: #fff; }
+  .btn-secondary:hover { background: #e65100; }
+  .btn-ghost { background: #fff; color: #6c63ff; border: 2px solid #6c63ff; }
+  .btn-ghost:hover { background: #f0eeff; }
+  .btn-test { background: linear-gradient(135deg, #f093fb, #f5576c); color: #fff; border: none; }
+  .btn-test:hover { opacity: 0.9; }
+  .btn-success { background: #43a047; color: #fff; }
+  .btn-danger { background: #e53935; color: #fff; }
+  .step-hint { font-size: 0.8rem; color: #888; }
+  @media (max-width: 600px) { .scene-grid { grid-template-columns: 1fr; } .clip-list { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 <div id="app"></div>
-
 <script>
 let currentStep = 0;
 let uploadedImage = null;
 let clipFiles = [];
 let activeTab = 'tiktok';
-
-const steps = [
-  '이미지 업로드',
-  '기본 정보',
-  '장면 프롬프트',
-  '대본 입력',
-  '자막 분할',
-  'SRT 생성',
-  'MP4 업로드',
-  '플랫폼 텍스트'
-];
+const steps = ['이미지 업로드', '기본 정보', '장면 프롬프트', '대본 입력', '자막 분할', 'SRT 생성', 'MP4 업로드', '플랫폼 텍스트'];
 
 function init() {
   renderApp();
+  setupEventDelegation();
+}
+
+function setupEventDelegation() {
+  const app = document.getElementById('app');
+  
+  app.addEventListener('click', (e) => {
+    const target = e.target;
+    
+    // Navigation buttons
+    if (target.id === 'prevBtn') {
+      currentStep = Math.max(0, currentStep - 1);
+      renderApp();
+    } else if (target.id === 'nextBtn') {
+      currentStep = Math.min(7, currentStep + 1);
+      renderApp();
+    } else if (target.id === 'testBtn') {
+      fillTestData();
+    }
+    
+    // Step dots navigation
+    else if (target.classList.contains('step-dot')) {
+      const step = parseInt(target.dataset.step);
+      if (!isNaN(step)) {
+        currentStep = step;
+        renderApp();
+      }
+    }
+    
+    // Upload zone
+    else if (target.id === 'uploadZone' || target.closest('#uploadZone')) {
+      const input = document.getElementById('imageInput');
+      if (input) input.click();
+    }
+    
+    // Generate scenes
+    else if (target.id === 'generateScenes') {
+      buildScenes();
+    }
+    
+    // Copy buttons
+    else if (target.classList.contains('copy-btn') || target.closest('.copy-btn')) {
+      const btn = target.classList.contains('copy-btn') ? target : target.closest('.copy-btn');
+      if (btn.dataset.copy) {
+        const text = document.getElementById(btn.dataset.copy)?.value;
+        if (text) {
+          navigator.clipboard.writeText(text);
+          alert('복사되었습니다!');
+        }
+      }
+    }
+    
+    // Split script
+    else if (target.id === 'splitScript') {
+      splitScriptIntoScenes();
+    }
+    
+    // Generate SRT
+    else if (target.id === 'generateSRT') {
+      buildSrt();
+    }
+    
+    // Copy SRT
+    else if (target.id === 'copySRT') {
+      const text = document.getElementById('srtOutput')?.textContent;
+      if (text) {
+        navigator.clipboard.writeText(text);
+        alert('SRT 전체가 복사되었습니다!');
+      }
+    }
+    
+    // Platform tabs
+    else if (target.classList.contains('ptab') || target.closest('.ptab')) {
+      const tab = target.classList.contains('ptab') ? target : target.closest('.ptab');
+      activeTab = tab.dataset.tab;
+      renderApp();
+    }
+    
+    // Generate platforms
+    else if (target.id === 'generatePlatforms') {
+      buildPlatformTexts();
+    }
+    
+    // Copy platform text
+    else if (target.id === 'copy-tiktok') {
+      const text = `${document.getElementById('tiktok-hook')?.value || ''}\n\n${document.getElementById('tiktok-caption')?.value || ''}\n\n${document.getElementById('tiktok-tags')?.value || ''}`;
+      navigator.clipboard.writeText(text);
+      alert('TikTok 텍스트가 복사되었습니다!');
+    } else if (target.id === 'copy-youtube') {
+      const text = `제목: ${document.getElementById('youtube-title')?.value || ''}\n\n설명:\n${document.getElementById('youtube-desc')?.value || ''}\n\n${document.getElementById('youtube-tags')?.value || ''}`;
+      navigator.clipboard.writeText(text);
+      alert('YouTube Shorts 텍스트가 복사되었습니다!');
+    } else if (target.id === 'copy-naver') {
+      const text = `제목: ${document.getElementById('naver-title')?.value || ''}\n\n설명:\n${document.getElementById('naver-desc')?.value || ''}\n\n연결 링크:\n${document.getElementById('naver-links')?.value || ''}`;
+      navigator.clipboard.writeText(text);
+      alert('Naver 클립 텍스트가 복사되었습니다!');
+    }
+  });
+  
+  // File input events
+  app.addEventListener('change', (e) => {
+    if (e.target.id === 'imageInput') {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          uploadedImage = ev.target.result;
+          renderApp();
+        };
+        reader.readAsDataURL(file);
+      }
+    } else if (e.target.id === 'clipInput') {
+      clipFiles = Array.from(e.target.files);
+      updateClipList();
+    }
+  });
 }
 
 function renderApp() {
@@ -409,7 +197,6 @@ function renderApp() {
       <h1>🎬 상품 쇼츠 제작 마법사 v3 ${currentStep === 7 ? '<span class="test-badge">테스트 완료</span>' : ''}</h1>
       <p>상품 이미지부터 플랫폼별 쇼츠 텍스트까지 한 번에 생성</p>
     </div>
-    
     <div class="steps-bar">
       ${steps.map((s, i) => `
         <div class="step-dot ${i === currentStep ? 'active' : ''} ${i < currentStep ? 'done' : ''}" data-step="${i}">
@@ -417,9 +204,7 @@ function renderApp() {
         </div>
       `).join('')}
     </div>
-    
     <div id="stepContent"></div>
-    
     <div class="actions">
       <div class="btn-group">
         ${currentStep > 0 ? '<button class="btn btn-ghost" id="prevBtn">← 이전</button>' : ''}
@@ -429,14 +214,11 @@ function renderApp() {
       <div class="step-hint">${currentStep + 1} / ${steps.length}</div>
     </div>
   `;
-  
   renderStepContent();
-  attachEvents();
 }
 
 function renderStepContent() {
   const content = document.getElementById('stepContent');
-  
   switch(currentStep) {
     case 0:
       content.innerHTML = `
@@ -552,7 +334,6 @@ function renderStepContent() {
             <div class="ptab youtube ${activeTab === 'youtube' ? 'active' : ''}" data-tab="youtube">YouTube Shorts</div>
             <div class="ptab naver ${activeTab === 'naver' ? 'active' : ''}" data-tab="naver">Naver 클립</div>
           </div>
-          
           <div class="platform-content ${activeTab === 'tiktok' ? 'show' : ''}" id="tiktok-content">
             <h3 style="margin-bottom:12px;">TikTok 캡션</h3>
             <div class="form-group">
@@ -569,7 +350,6 @@ function renderStepContent() {
             </div>
             <button class="copy-btn" id="copy-tiktok">📋 전체 복사</button>
           </div>
-          
           <div class="platform-content ${activeTab === 'youtube' ? 'show' : ''}" id="youtube-content">
             <h3 style="margin-bottom:12px;">YouTube Shorts</h3>
             <div class="form-group">
@@ -586,7 +366,6 @@ function renderStepContent() {
             </div>
             <button class="copy-btn" id="copy-youtube">📋 전체 복사</button>
           </div>
-          
           <div class="platform-content ${activeTab === 'naver' ? 'show' : ''}" id="naver-content">
             <h3 style="margin-bottom:12px;">Naver 클립</h3>
             <div class="form-group">
@@ -603,7 +382,6 @@ function renderStepContent() {
             </div>
             <button class="copy-btn" id="copy-naver">📋 전체 복사</button>
           </div>
-          
           <button class="btn btn-success" id="generatePlatforms" style="margin-top:16px;">✨ 플랫폼 텍스트 자동 생성</button>
         </div>
       `;
@@ -611,202 +389,85 @@ function renderStepContent() {
   }
 }
 
-function attachEvents() {
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const testBtn = document.getElementById('testBtn');
-  
-  if (prevBtn) prevBtn.addEventListener('click', () => {
-    currentStep = Math.max(0, currentStep - 1);
-    renderApp();
-  });
-  
-  if (nextBtn) nextBtn.addEventListener('click', () => {
-    currentStep = Math.min(7, currentStep + 1);
-    renderApp();
-  });
-  
-  if (testBtn) testBtn.addEventListener('click', fillTestData);
-  
-  attachStepEvents();
-}
-
-function attachStepEvents() {
-  const uploadZone = document.getElementById('uploadZone');
-  const imageInput = document.getElementById('imageInput');
-  if (uploadZone) {
-    uploadZone.addEventListener('click', () => imageInput.click());
-    imageInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          uploadedImage = ev.target.result;
-          renderApp();
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  }
-  
-  const generateScenes = document.getElementById('generateScenes');
-  if (generateScenes) {
-    generateScenes.addEventListener('click', buildScenes);
-  }
-  
-  document.querySelectorAll('[data-copy]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const id = e.target.dataset.copy;
-      const text = document.getElementById(id).value;
-      navigator.clipboard.writeText(text);
-      alert('복사되었습니다!');
-    });
-  });
-  
-  const splitScript = document.getElementById('splitScript');
-  if (splitScript) {
-    splitScript.addEventListener('click', splitScriptIntoScenes);
-  }
-  
-  const generateSRT = document.getElementById('generateSRT');
-  const copySRT = document.getElementById('copySRT');
-  if (generateSRT) {
-    generateSRT.addEventListener('click', buildSrt);
-  }
-  if (copySRT) {
-    copySRT.addEventListener('click', () => {
-      const text = document.getElementById('srtOutput').textContent;
-      navigator.clipboard.writeText(text);
-      alert('SRT 전체가 복사되었습니다!');
-    });
-  }
-  
-  const clipInput = document.getElementById('clipInput');
-  if (clipInput) {
-    clipInput.addEventListener('change', (e) => {
-      clipFiles = Array.from(e.target.files);
-      updateClipList();
-    });
-  }
-  
-  document.querySelectorAll('.ptab').forEach(tab => {
-    tab.addEventListener('click', (e) => {
-      activeTab = e.target.dataset.tab;
-      renderApp();
-    });
-  });
-  
-  const generatePlatforms = document.getElementById('generatePlatforms');
-  if (generatePlatforms) {
-    generatePlatforms.addEventListener('click', buildPlatformTexts);
-  }
-  
-  const copyTiktok = document.getElementById('copy-tiktok');
-  const copyYoutube = document.getElementById('copy-youtube');
-  const copyNaver = document.getElementById('copy-naver');
-  if (copyTiktok) {
-    copyTiktok.addEventListener('click', () => {
-      const text = `${document.getElementById('tiktok-hook').value}\\n\\n${document.getElementById('tiktok-caption').value}\\n\\n${document.getElementById('tiktok-tags').value}`;
-      navigator.clipboard.writeText(text);
-      alert('TikTok 텍스트가 복사되었습니다!');
-    });
-  }
-  if (copyYoutube) {
-    copyYoutube.addEventListener('click', () => {
-      const text = `제목: ${document.getElementById('youtube-title').value}\\n\\n설명:\\n${document.getElementById('youtube-desc').value}\\n\\n${document.getElementById('youtube-tags').value}`;
-      navigator.clipboard.writeText(text);
-      alert('YouTube Shorts 텍스트가 복사되었습니다!');
-    });
-  }
-  if (copyNaver) {
-    copyNaver.addEventListener('click', () => {
-      const text = `제목: ${document.getElementById('naver-title').value}\\n\\n설명:\\n${document.getElementById('naver-desc').value}\\n\\n연결 링크:\\n${document.getElementById('naver-links').value}`;
-      navigator.clipboard.writeText(text);
-      alert('Naver 클립 텍스트가 복사되었습니다!');
-    });
-  }
-
-    // Step dot navigation
-    document.querySelectorAll('.step-dot').forEach(dot => {
-          dot.addEventListener('click', (e) => {
-                  currentStep = parseInt(e.target.dataset.step);
-                  renderApp();
-                });
-        });
-}
-
 function buildScenes() {
-  const productType = document.getElementById('productType').value;
-  const ratio = document.getElementById('aspectRatio').value;
-  const tone = document.getElementById('videoTone').value;
-  const cta = document.getElementById('ctaText').value || '지금 확인하세요';
+  const productType = document.getElementById('productType')?.value || '주방용품';
+  const ratio = document.getElementById('aspectRatio')?.value || '9:16 쇼츠';
+  const tone = document.getElementById('videoTone')?.value || '광고형';
+  const cta = document.getElementById('ctaText')?.value || '지금 확인하세요';
   
-  document.getElementById('scene1').value = `${productType}이 깔끔한 스튜디오 위에 놓여 있습니다. 카메라가 천천히 정면에서 줌인하며, 부드러운 조명이 제품 표면을 비춥니다. ${ratio} 비율, ${tone} 느낌.`;
+  const scene1 = document.getElementById('scene1');
+  const scene2 = document.getElementById('scene2');
+  const scene3 = document.getElementById('scene3');
+  const scene4 = document.getElementById('scene4');
   
-  document.getElementById('scene2').value = `제품이 천천히 180도 회전합니다. 주요 디테일과 특징이 자연스럽게 드러나며, 카메라는 약간 측면으로 이동합니다. ${tone} 스타일 유지.`;
-  
-  document.getElementById('scene3').value = `제품의 핵심 기능이나 사용 장면을 강조합니다. 손이 제품을 가볍게 잡거나 사용하는 짧은 동작을 포함할 수 있습니다. ${ratio} 세로 프레임.`;
-  
-  document.getElementById('scene4').value = `마무리 장면. 제품이 화면 중앙에 안정적으로 배치되고, "${cta}" 같은 CTA 텍스트가 자연스럽게 오버레이됩니다. ${tone} 분위기 마무리.`;
+  if (scene1) scene1.value = `${productType}이 깔끔한 스튜디오 위에 놓여 있습니다. 카메라가 천천히 정면에서 줌인하며, 부드러운 조명이 제품 표면을 비춥니다. ${ratio} 비율, ${tone} 느낌.`;
+  if (scene2) scene2.value = `제품이 천천히 180도 회전합니다. 주요 디테일과 특징이 자연스럽게 드러나며, 카메라는 약간 측면으로 이동합니다. ${tone} 스타일 유지.`;
+  if (scene3) scene3.value = `제품의 핵심 기능이나 사용 장면을 강조합니다. 손이 제품을 가볍게 잡거나 사용하는 짧은 동작을 포함할 수 있습니다. ${ratio} 세로 프레임.`;
+  if (scene4) scene4.value = `마무리 장면. 제품이 화면 중앙에 안정적으로 배치되고, "${cta}" 같은 CTA 텍스트가 자연스럽게 오버레이됩니다. ${tone} 분위기 마무리.`;
   
   alert('4개 장면 프롬프트가 자동 생성되었습니다!');
 }
 
 function splitScriptIntoScenes() {
-  const script = document.getElementById('scriptInput').value;
-  if (!script) {
+  const scriptEl = document.getElementById('scriptInput');
+  if (!scriptEl || !scriptEl.value) {
     alert('먼저 대본을 입력해주세요!');
     return;
   }
   
+  const script = scriptEl.value;
   const sentences = script.match(/[^.!?]+[.!?]+/g) || [script];
   const perScene = Math.ceil(sentences.length / 4);
-  
   const scene1 = sentences.slice(0, perScene).join(' ');
   const scene2 = sentences.slice(perScene, perScene * 2).join(' ');
   const scene3 = sentences.slice(perScene * 2, perScene * 3).join(' ');
   const scene4 = sentences.slice(perScene * 3).join(' ');
   
-  document.getElementById('subtitleSplit').innerHTML = `
-    <div class="scene-card" style="margin-bottom:12px;">
-      <h4>장면 1 자막 (0~5초)</h4>
-      <p>${scene1}</p>
-    </div>
-    <div class="scene-card" style="margin-bottom:12px;">
-      <h4>장면 2 자막 (5~10초)</h4>
-      <p>${scene2}</p>
-    </div>
-    <div class="scene-card" style="margin-bottom:12px;">
-      <h4>장면 3 자막 (10~15초)</h4>
-      <p>${scene3}</p>
-    </div>
-    <div class="scene-card" style="margin-bottom:12px;">
-      <h4>장면 4 자막 (15~20초)</h4>
-      <p>${scene4}</p>
-    </div>
-  `;
+  const splitEl = document.getElementById('subtitleSplit');
+  if (splitEl) {
+    splitEl.innerHTML = `
+      <div class="scene-card" style="margin-bottom:12px;">
+        <h4>장면 1 자막 (0~5초)</h4>
+        <p>${scene1}</p>
+      </div>
+      <div class="scene-card" style="margin-bottom:12px;">
+        <h4>장면 2 자막 (5~10초)</h4>
+        <p>${scene2}</p>
+      </div>
+      <div class="scene-card" style="margin-bottom:12px;">
+        <h4>장면 3 자막 (10~15초)</h4>
+        <p>${scene3}</p>
+      </div>
+      <div class="scene-card" style="margin-bottom:12px;">
+        <h4>장면 4 자막 (15~20초)</h4>
+        <p>${scene4}</p>
+      </div>
+    `;
+  }
 }
 
 function buildSrt() {
-  const script = document.getElementById('scriptInput').value;
-  if (!script) {
+  const scriptEl = document.getElementById('scriptInput');
+  if (!scriptEl || !scriptEl.value) {
     alert('먼저 대본을 입력해주세요!');
     return;
   }
   
+  const script = scriptEl.value;
   const sentences = script.match(/[^.!?]+[.!?]+/g) || [script];
   const duration = 20 / sentences.length;
-  
   let srt = '';
+  
   sentences.forEach((s, i) => {
     const start = i * duration;
     const end = (i + 1) * duration;
-    srt += `${i + 1}\\n`;
-    srt += `${formatTime(start)} --> ${formatTime(end)}\\n`;
-    srt += `${s.trim()}\\n\\n`;
+    srt += `${i + 1}\n`;
+    srt += `${formatTime(start)} --> ${formatTime(end)}\n`;
+    srt += `${s.trim()}\n\n`;
   });
   
-  document.getElementById('srtOutput').textContent = srt;
+  const srtEl = document.getElementById('srtOutput');
+  if (srtEl) srtEl.textContent = srt;
 }
 
 function formatTime(sec) {
@@ -820,7 +481,6 @@ function formatTime(sec) {
 function updateClipList() {
   const list = document.getElementById('clipList');
   if (!list) return;
-  
   list.innerHTML = clipFiles.map((f, i) => `
     <div class="clip-item">
       <strong>장면 ${i + 1}</strong>
@@ -831,21 +491,32 @@ function updateClipList() {
 }
 
 function buildPlatformTexts() {
-  const productType = document.getElementById('productType').value;
-  const script = document.getElementById('scriptInput').value || '매일 사용하는 상품, 이제 더 편리하게 사용해보세요.';
-  const cta = document.getElementById('ctaText').value || '지금 확인하세요';
+  const productType = document.getElementById('productType')?.value || '주방용품';
+  const scriptEl = document.getElementById('scriptInput');
+  const script = scriptEl?.value || '매일 사용하는 상품, 이제 더 편리하게 사용해보세요.';
+  const cta = document.getElementById('ctaText')?.value || '지금 확인하세요';
   
-  document.getElementById('tiktok-hook').value = `${productType} 이거 하나면 끝난다`;
-  document.getElementById('tiktok-caption').value = script.split('.')[0] + '.';
-  document.getElementById('tiktok-tags').value = `#${productType}추천 #쇼핑 #생활꿀템`;
+  const tiktokHook = document.getElementById('tiktok-hook');
+  const tiktokCaption = document.getElementById('tiktok-caption');
+  const tiktokTags = document.getElementById('tiktok-tags');
+  const youtubeTitle = document.getElementById('youtube-title');
+  const youtubeDesc = document.getElementById('youtube-desc');
+  const youtubeTags = document.getElementById('youtube-tags');
+  const naverTitle = document.getElementById('naver-title');
+  const naverDesc = document.getElementById('naver-desc');
+  const naverLinks = document.getElementById('naver-links');
   
-  document.getElementById('youtube-title').value = `${productType} 추천, ${script.split('.')[0]} 2026`;
-  document.getElementById('youtube-desc').value = `${script}\\n\\n${cta}`;
-  document.getElementById('youtube-tags').value = `#Shorts #${productType} #추천템`;
+  if (tiktokHook) tiktokHook.value = `${productType} 이거 하나면 끝난다`;
+  if (tiktokCaption) tiktokCaption.value = script.split('.')[0] + '.';
+  if (tiktokTags) tiktokTags.value = `#${productType}추천 #쇼핑 #생활꿀템`;
   
-  document.getElementById('naver-title').value = `${productType} 추천 베스트`;
-  document.getElementById('naver-desc').value = `${script}\\n\\n자세한 후기는 블로그와 쇼핑 링크에서 확인하세요.`;
-  document.getElementById('naver-links').value = '블로그: (URL)\\n쇼핑: (URL)';
+  if (youtubeTitle) youtubeTitle.value = `${productType} 추천, ${script.split('.')[0]} 2026`;
+  if (youtubeDesc) youtubeDesc.value = `${script}\n\n${cta}`;
+  if (youtubeTags) youtubeTags.value = `#Shorts #${productType} #추천템`;
+  
+  if (naverTitle) naverTitle.value = `${productType} 추천 베스트`;
+  if (naverDesc) naverDesc.value = `${script}\n\n자세한 후기는 블로그와 쇼핑 링크에서 확인하세요.`;
+  if (naverLinks) naverLinks.value = '블로그: (URL)\n쇼핑: (URL)';
   
   alert('플랫폼별 텍스트가 자동 생성되었습니다!');
 }
@@ -859,10 +530,14 @@ function fillTestData() {
   renderApp();
   
   setTimeout(() => {
-    document.getElementById('productType').value = '주방용품';
-    document.getElementById('aspectRatio').value = '9:16 쇼츠';
-    document.getElementById('videoTone').value = '광고형';
-    document.getElementById('ctaText').value = '지금 바로 확인해보세요';
+    const pt = document.getElementById('productType');
+    const ar = document.getElementById('aspectRatio');
+    const vt = document.getElementById('videoTone');
+    const ct = document.getElementById('ctaText');
+    if (pt) pt.value = '주방용품';
+    if (ar) ar.value = '9:16 쇼츠';
+    if (vt) vt.value = '광고형';
+    if (ct) ct.value = '지금 바로 확인해보세요';
     
     currentStep = 2;
     renderApp();
@@ -875,7 +550,8 @@ function fillTestData() {
       
       setTimeout(() => {
         const sampleScript = '매일 쓰는 접시와 컵, 설거지 시간이 너무 길다고 느껴지지 않나요? 이 주방 설거지 용품은 물때와 기름때를 빠르게 제거해 줍니다. 손에 무리가 덜 가도록 인체공학적으로 설계되어 자취생과 직장인에게 딱 맞습니다. 지금 바로 확인해보고 내 주방에 맞는지 비교해 보세요.';
-        document.getElementById('scriptInput').value = sampleScript;
+        const si = document.getElementById('scriptInput');
+        if (si) si.value = sampleScript;
         
         currentStep = 4;
         renderApp();
